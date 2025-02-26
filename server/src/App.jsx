@@ -1,4 +1,3 @@
-import {useState} from 'react'
 import './App.css'
 import {Route, Routes} from 'react-router'
 import Home from './Pages/Home'
@@ -12,7 +11,7 @@ function App() {
         <div>
             <Routes>
                 <Route element={< ProtectedRoutes />}>
-                    <Route path='home'>
+                    <Route path='home'> 
                         <Route index element={< Home />} />
                         <Route path='create' element={< Create />}/>
                     </Route>
