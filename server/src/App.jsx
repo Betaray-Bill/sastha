@@ -11,7 +11,7 @@ function App() {
         <div>
             <Routes>
                 <Route element={< ProtectedRoutes />}>
-                    <Route path='home'> 
+                    <Route path='/'> 
                         <Route index element={< Home />} />
                         <Route path='create' element={< Create />}/>
                     </Route>
