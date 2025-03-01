@@ -8,7 +8,7 @@ function Create() {
             
             {/* Header */}
             <div>
-                <h1 className='text-4xl font-bold text-center'>Create</h1>
+                <h1 className='text-4xl font-bold text-center'>Create Content</h1>
             </div>
 
             {/* Dashboard */}
