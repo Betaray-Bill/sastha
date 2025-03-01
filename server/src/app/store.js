@@ -10,7 +10,9 @@ import storage from 'redux-persist/lib/storage';
 // })
 
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+    employeeDetails: employeeDetailsReducer
+});
 
 const persistConfig = {
     key: 'root',
