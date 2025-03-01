@@ -102,6 +102,8 @@ function Dashboard() {
         setData(newData)
     }
 
+
+    console.log(data)
     return (
         <div className='w-full'>
             <div className='flex items-start justify-around mt-5'>
