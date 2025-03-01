@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
+
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
@@ -51,15 +52,15 @@ function Login() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100 px-4">
-      <Card className="w-full max-w-md rounded-xl shadow-lg p-6 bg-white">
+    <div className="flex h-screen items-center justify-center Login-bg px-4">
+      <Card className="w-full max-w-md p-6 glassType-1">
         <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-center">Login</CardTitle>
+          <CardTitle className="text-3xl font-semibold text-center text-white">Log-In</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-white text-sm">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -70,7 +71,7 @@ function Login() {
               {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-white text-sm">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -83,13 +84,13 @@ function Login() {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Checkbox id="remember" />
-                <Label htmlFor="remember" className="text-xs">
+                <Label htmlFor="remember" className="text-xs text-white">
                   Keep me signed in
                 </Label>
               </div>
               <button
                 type="button"
-                className="text-xs text-blue-600 hover:underline"
+                className="text-sm text-blue-600 hover:underline hover:cursor-pointer"
                 onClick={() => setForgotModalOpen(true)}
               >
                 Forgot password?
@@ -103,7 +104,7 @@ function Login() {
       </Card>
 
       {/* Forgot Password Modal */}
-      <Dialog open={isForgotModalOpen} onOpenChange={setForgotModalOpen}>
+      <Dialog open={isForgotModalOpen} onOpenChange={setForgotModalOpen} className="bg-yellow-200">
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Forgot Password</DialogTitle>
