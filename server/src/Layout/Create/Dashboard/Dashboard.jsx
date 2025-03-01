@@ -57,6 +57,8 @@ function Dashboard() {
         });
     };
 
+
+    console.log(data)
     return (
         <div className='w-full min-h-screen bg-gray-100 dark:bg-gray-900 p-6'>
             <div className='max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8'>

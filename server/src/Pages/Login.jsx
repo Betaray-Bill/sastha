@@ -5,6 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom'
+import { setUser } from "../app/feature/userSlice";
+
 
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -12,6 +18,9 @@ function Login() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [isForgotModalOpen, setForgotModalOpen] = useState(false);
   const [forgotMessage, setForgotMessage] = useState("");
+  const [isAuth , setIsAuth] = useState(false)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const validateForm = () => {
     let newErrors = {};
@@ -32,11 +41,34 @@ function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted", formData);
-      // Add login logic here
+    try{
+      if (validateForm()) {
+        console.log("Form submitted", formData);
+        // Add login logic here
+
+        await signInWithEmailAndPassword(auth, formData.email, formData.password)
+                .then((userCredential) => {
+                    // Register
+                    console.log(userCredential)
+                    const user = userCredential.user;
+                    console.log(user);
+                    dispatch(setUser(user))
+                    setIsAuth(true)
+                    navigate('/')
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode)
+                    console.log(errorMessage)
+                    // setIsAuth(false)
+                });
+      }
+    }catch(err){
+      console.error(err);
+      alert("Error")
     }
   };
 
