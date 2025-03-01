@@ -96,7 +96,7 @@ function Login() {
               <Input
                 id="email"
                 type="email"
-                className="w-full"
+                className="w-full bg-white"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
@@ -107,7 +107,7 @@ function Login() {
               <Input
                 id="password"
                 type="password"
-                className="w-full"
+                className="w-full bg-white"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
