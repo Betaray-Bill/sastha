@@ -51,6 +51,16 @@ function ImageUpload() {
         setImages(data); // Update the state
     };
 
+    const handleChange = (e, index) => {
+        //
+        const value = e.target.value;
+        setImages(p => {
+            const newData = [...p];
+            newData[index].alt = value;
+            return newData;
+        })
+    }
+
     const uploadToCloudinary = async (file) => {
         const cloudName = "de2i4bxdq";
         const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
@@ -100,6 +110,7 @@ function ImageUpload() {
                                 Add Image
                             </Button>
                         </div>
+                      
                         <div className="mt-4 grid grid-cols-2 gap-4">
                             {images.map((image, index) => (
                                 <div key={index} className="border rounded-md p-3">
@@ -115,7 +126,7 @@ function ImageUpload() {
                                                             className="w-[140px] h-[150px] object-fill"/>
                                                     </div>
                                                     <div>
-                                                        {/* <Textarea className="w-[200px]" /> */}
+                                                        <Textarea className="w-[200px]" placeholder="Description" onChange={(e) => handleChange(e, index)}/>
                                                     </div>
                                                     <Trash2
                                                         className="cursor-pointer"
