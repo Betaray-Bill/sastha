@@ -114,15 +114,44 @@ function Dashboard() {
     }
 
     // Function to receive data from the child
-    const [images, setImages] = useState([]);
+    const [images,
+        setImages] = useState([]);
     const handleChildData = (childData) => {
-      setImages(childData);
+        setImages(childData);
+    };
+
+    // upload to cloud
+    const uploadToCloudinary = async(file) => {
+        const cloudName = "de2i4bxdq";
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "silverWhite-demo");
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: formData
+            });
+            if (!response.ok) {
+                throw new Error("Failed to upload image to Cloudinary");
+            }
+            const data = await response.json();
+            return data.secure_url;
+        } catch (error) {
+            console.error("Cloudinary upload error:", error);
+            throw error;
+        }
     };
 
     // Upload Images Save Data to firebase
     const uploadData = async() => {
         try {
-            // Upload data to firebase
+            // Upload images to cloudinary 
+            // Get URL and map its url with alt tag 
+            // Upload data to firebase 
+            // saved Toast
         } catch (err) {
             console.log(err)
         }
@@ -130,6 +159,11 @@ function Dashboard() {
 
     return (
         <div className="w-full p-14">
+            <div
+                className="flex items-center justify-between w-[80vw] mx-auto bg-black rounded-md px-3 py-1 my-3">
+                <span className="text-gray-300 text-sm">Change done need to be saved</span>
+                <Button className="text-white bg-slate-700 ">Save</Button>
+            </div>
             <div className="flex gap-6 w-[80vw] mx-auto">
                 {/* Output Section */}
                 <Card className="flex-1">
@@ -142,7 +176,7 @@ function Dashboard() {
                             </div>
                         </CardTitle>
                     </CardHeader>
-               
+
                     <CardContent>
                         <div className="space-y-6">
                             <div>

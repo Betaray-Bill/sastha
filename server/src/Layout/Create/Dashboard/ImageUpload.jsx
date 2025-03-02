@@ -65,29 +65,6 @@ function ImageUpload({sendDataToParent}) {
         sendDataToParent(images)
     }, [images])
 
-    const uploadToCloudinary = async (file) => {
-        const cloudName = "de2i4bxdq";
-        const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", "silverWhite-demo");
-
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                body: formData,
-            });
-            if (!response.ok) {
-                throw new Error("Failed to upload image to Cloudinary");
-            }
-            const data = await response.json();
-            return data.secure_url;
-        } catch (error) {
-            console.error("Cloudinary upload error:", error);
-            throw error;
-        }
-    };
 
     return (
         <div>
