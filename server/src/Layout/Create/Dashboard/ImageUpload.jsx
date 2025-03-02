@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Button} from "@/components/ui/button";
@@ -7,7 +7,7 @@ import {Card} from "@/components/ui/card";
 import {Trash2} from "lucide-react"; // Icons from Lucide React
 import {toast} from "sonner";
 
-function ImageUpload() {
+function ImageUpload({sendDataToParent}) {
     const [images,
         setImages] = useState([]);
 
@@ -60,6 +60,10 @@ function ImageUpload() {
             return newData;
         })
     }
+
+    useEffect(() => {
+        sendDataToParent(images)
+    }, [images])
 
     const uploadToCloudinary = async (file) => {
         const cloudName = "de2i4bxdq";

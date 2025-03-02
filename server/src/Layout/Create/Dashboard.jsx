@@ -113,6 +113,12 @@ function Dashboard() {
         }
     }
 
+    // Function to receive data from the child
+    const [images, setImages] = useState([]);
+    const handleChildData = (childData) => {
+      setImages(childData);
+    };
+
     // Upload Images Save Data to firebase
     const uploadData = async() => {
         try {
@@ -136,6 +142,7 @@ function Dashboard() {
                             </div>
                         </CardTitle>
                     </CardHeader>
+               
                     <CardContent>
                         <div className="space-y-6">
                             <div>
@@ -279,7 +286,7 @@ function Dashboard() {
                 </Card>
             </div>
 
-            <ImageUpload />
+            <ImageUpload sendDataToParent={handleChildData}/>
         </div>
     );
 }
