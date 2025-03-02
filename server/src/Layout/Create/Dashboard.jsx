@@ -185,6 +185,12 @@ function Dashboard() {
           setIsLoading(p => !p)
           return;
       }
+
+      if(pdf === null){
+        toast.error("Please upload a PDF to save.");
+        setIsLoading(p => !p)
+        return;
+      }
       try {
           // Upload only the file to Cloudinary and get the URL
           const uploadedImageUrls = await Promise.all(
@@ -193,12 +199,15 @@ function Dashboard() {
                   return { src: url, alt: img.alt }; // Map back to its alt
               })
           );
+
+          const uploadPdf = await uploadToCloudinary(pdf)
   
           console.log(uploadedImageUrls);
   
           // Append images with src and alt to sendData
           const sendData = {
               data:data,
+              pdf:uploadPdf,
               images: uploadedImageUrls, // Now includes both src and alt
           };
   
