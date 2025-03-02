@@ -9,6 +9,8 @@ import { variables } from "../../utils/constants";
 import { toast } from "sonner";
 import { db } from "../../utils/firebase";
 import { addDoc, collection } from "firebase/firestore";
+import ImageUpload from "./Dashboard/ImageUpload";
+import Loading from "../Components/Loading";
 
 function Dashboard() {
     const [data, setData] = useState([]);
@@ -16,7 +18,14 @@ function Dashboard() {
     const [pdf, setPdf] = useState(null);
     const [pdfUploading, setPdfUploading] = useState(false); // Separate state for PDF upload
     const [images, setImages] = useState([]);
-    const [imageUploading, setImageUploading] = useState(false); // Separate state for image upload
+    const [IsLoading, setIsLoading] = useState(false); // Separate state for image upload
+   
+   
+    // Function to receive data from the child
+    const handleChildData = (childData) => {
+        setImages(childData);
+    };
+
 
     // Add data for variables
     const addData = (variable) => {
@@ -132,41 +141,6 @@ function Dashboard() {
         toast.info("PDF deleted.");
     };
 
-    // Handle image upload
-    const handleImageUpload = (e) => {
-        const files = e.target.files;
-        if (!files || files.length === 0) return;
-    
-        setImageUploading(true); // Start uploading
-        try {
-            const newImages = Array.from(files).map((file) => ({
-                file,
-                url: URL.createObjectURL(file), // Generate a preview URL
-            }));
-    
-            setImages((prevImages) => [...prevImages, ...newImages]);
-            toast.success("Images uploaded successfully!");
-        } catch (err) {
-            console.error(err);
-            toast.error("Failed to upload images.");
-        } finally {
-            setImageUploading(false); // Stop uploading
-        }
-    };
-    
-    // Delete uploaded image
-    const deleteImage = (index) => {
-        setImages((prevImages) => {
-            const updatedImages = prevImages.filter((_, i) => i !== index);
-            return updatedImages;
-        });
-    
-        // Clear the file input value to allow re-uploading the same file
-        const fileInput = document.getElementById("image");
-        if (fileInput) fileInput.value = "";
-    
-        toast.info("Image deleted.");
-    };
 
     // Upload to Cloudinary
     const uploadToCloudinary = async (file) => {
@@ -193,30 +167,64 @@ function Dashboard() {
         }
     };
 
+    console.log(images)
+
     // Upload Images and Save Data to Firebase
     const uploadData = async () => {
-        try {
-            // Upload images to Cloudinary
-            const uploadedImageUrls = await Promise.all(
-                images.map((img) => uploadToCloudinary(img.file))
-            );
-            const sendData = {
-                ...data,
-                images: uploadedImageUrls,
-            };
-            const generatorDocRef = await addDoc(collection(db, "generator"), sendData);
-            toast.success("Data uploaded successfully!");
-        } catch (err) {
-            console.error(err);
-            toast.error("Failed to upload data.");
-        }
-    };
+      setIsLoading(p => !p)
+      // check if the data is empty or nor
+      if (data.length === 0) {
+          toast.error("Please add data to save.");
+          setIsLoading(p => !p)
+          return;
+      }
+
+      // Check images are empty 
+      if (images.length === 0) {
+          toast.error("Please upload images to save.");
+          setIsLoading(p => !p)
+          return;
+      }
+      try {
+          // Upload only the file to Cloudinary and get the URL
+          const uploadedImageUrls = await Promise.all(
+              images.map(async (img) => {
+                  const url = await uploadToCloudinary(img.file);
+                  return { src: url, alt: img.alt }; // Map back to its alt
+              })
+          );
+  
+          console.log(uploadedImageUrls);
+  
+          // Append images with src and alt to sendData
+          const sendData = {
+              data:data,
+              images: uploadedImageUrls, // Now includes both src and alt
+          };
+  
+          console.log(sendData);
+  
+          // Upload to Firestore
+          const generatorDocRef = await addDoc(collection(db, "generator"), sendData);
+          toast.success("Data uploaded successfully!");
+          setIsLoading(p => !p)
+
+          
+      } catch (err) {
+          console.error(err);
+          toast.error("Failed to upload data.");
+      setIsLoading(p => !p)
+
+      }
+  };
+  
 
     return (
         <div className="w-full p-14">
-            <div className="flex items-center justify-between w-[80vw] mx-auto bg-black rounded-md px-3 py-1 my-3">
+        {/* <Loading /> */}
+            <div className="flex items-center justify-between w-[80vw] mx-auto bg-black opacity-90 rounded-md px-3 py-1 my-3">
                 <span className="text-gray-300 text-sm">Changes made need to be saved</span>
-                <Button className="text-white bg-slate-700">Save</Button>
+                <Button className="text-white   hover:opacity-40" onClick={uploadData}>{IsLoading ? "Saving..." : "Save"}</Button>
             </div>
             
             <div className="flex gap-6 w-[80vw] mx-auto">
@@ -419,65 +427,7 @@ function Dashboard() {
             </div>
 
             {/* Image Upload Section */}
-            <div className="w-[80vw] mx-auto mt-6">
-                <Card className="p-4">
-                    <div className="space-y-4">
-                        <Label htmlFor="image">Upload Image</Label>
-                        <div className="flex items-center justify-center w-full">
-                            <label
-                                htmlFor="image"
-                                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 ${
-                                    imageUploading ? "opacity-50 cursor-not-allowed" : ""
-                                }`}
-                            >
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <UploadCloud className="h-8 w-8 text-gray-400 mb-2" />
-                                    {imageUploading ? (
-                                        <p className="text-sm text-gray-500">Uploading...</p>
-                                    ) : (
-                                        <>
-                                            <p className="text-sm text-gray-500">
-                                                <span className="font-semibold">Click to upload</span> or drag and drop
-                                            </p>
-                                            <p className="text-xs text-gray-500">JPG, PNG (MAX. 500KB)</p>
-                                        </>
-                                    )}
-                                </div>
-                                <Input
-                                    id="image" // Ensure this matches the ID used in deleteImage
-                                    type="file"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                    disabled={imageUploading} // Disable input during upload
-                                    accept="image/*" // Only allow images
-                                    multiple // Allow multiple images
-                                />
-                            </label>
-                        </div>
-                        {images.length > 0 && (
-                            <div className="mt-4 grid grid-cols-3 gap-4">
-                                {images.map((img, index) => (
-                                    <div key={index} className="relative">
-                                        <img
-                                            src={img.url}
-                                            alt={`Uploaded ${index + 1}`}
-                                            className="w-full h-32 object-cover rounded-lg"
-                                        />
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="absolute top-1 right-1 bg-white/50 hover:bg-white/70"
-                                            onClick={() => deleteImage(index)}
-                                        >
-                                            <X className="h-4 w-4 text-red-500" />
-                                        </Button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </Card>
-            </div>
+            <ImageUpload sendDataToParent={handleChildData} />
         </div>
     );
 }

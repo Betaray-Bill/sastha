@@ -4,52 +4,53 @@ import {Label} from "@/components/ui/label";
 import {Button} from "@/components/ui/button";
 import {Textarea} from "@/components/ui/textarea";
 import {Card} from "@/components/ui/card";
-import {Trash2} from "lucide-react"; // Icons from Lucide React
+import {Trash2, UploadCloud, X} from "lucide-react"; // Icons from Lucide React
 import {toast} from "sonner";
 
 function ImageUpload({sendDataToParent}) {
     const [images,
         setImages] = useState([]);
+    const [imageUploading, setImageUploading] = useState(false); // Separate state for image upload
 
-    const handleImageUpload = (e, index) => {
-        const file = e.target.files[0];
-        // alert(file.size)
-        if (!file) 
-            return;
-        
-        const isValidSize = file.size <= 10200 * 1024; // 500 KB
-        // alert(isValidSize)
-        if (!isValidSize) {
-            toast("File Exceeds 500KB size", {
-                // description: "Sunday, December 03, 2023 at 9:00 AM",
-                variant: "success",
-                action: {
-                    label: "Undo",
-                    onClick: () => console.log("Undo")
-                }
-            })
-            // alert(`${file.name} exceeds the 500 KB size limit.`);
-            return
-        } else {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            reader.onload = () => {
-                const data = [...images]; // Copy the current images array
-                data[index] = {
-                    src: reader.result,
-                    alt: file.name
-                }; // Store the data URL
-                setImages(data);
-            };
+   // Handle image upload
+    const handleImageUpload = (e) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+    
+        setImageUploading(true); // Start uploading
+        try {
+            const newImages = Array.from(files).map((file) => ({
+                src: URL.createObjectURL(file), // Generate preview URL
+                file,
+                url: URL.createObjectURL(file),
+                alt: "", // Use file name or default alt
+            }));
+    
+            setImages((prevImages) => [...prevImages, ...newImages]); // Append new images
+            toast.success("Images uploaded successfully!");
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to upload images.");
+        } finally {
+            setImageUploading(false); // Stop uploading
         }
     };
 
-    const removeImage = (index) => {
-        const data = [...images]; // Copy the current images array
-        data.splice(index, 1); // Remove the specific index
-        setImages(data); // Update the state
-    };
+    
+
+     // Delete uploaded image
+     const deleteImage = (index) => {
+         setImages((prevImages) => {
+             const updatedImages = prevImages.filter((_, i) => i !== index);
+             return updatedImages;
+         });
+     
+         // Clear the file input value to allow re-uploading the same file
+         const fileInput = document.getElementById("image");
+         if (fileInput) fileInput.value = "";
+     
+         toast.info("Image deleted.");
+     };
 
     const handleChange = (e, index) => {
         //
@@ -65,85 +66,84 @@ function ImageUpload({sendDataToParent}) {
         sendDataToParent(images)
     }, [images])
 
+    const handleChangeText = (e, index) => {
+        const value = e.target.value;
+        setImages(p => {
+            const newData = [...p];
+            newData[index].alt = value;
+            return newData;
+        })
+    }
+
 
     return (
-        <div>
-            <Card className="w-[80vw] mt-10 mx-auto p-4">
-                {/* Upload Product Images */}
-                <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-semibold">Upload Images</h2>
-                    
+        <div className="w-[80vw] mx-auto mt-6">
+        <Card className="p-4">
+            <div className="space-y-4">
+                <Label htmlFor="image">Upload Image</Label>
+                <div className="flex items-center justify-center w-full">
+                    <label
+                        htmlFor="image"
+                        className={`flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 ${
+                            imageUploading ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                    >
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <UploadCloud className="h-8 w-8 text-gray-400 mb-2" />
+                            {imageUploading ? (
+                                <p className="text-sm text-gray-500">Uploading...</p>
+                            ) : (
+                                <>
+                                    <p className="text-sm text-gray-500">
+                                        <span className="font-semibold">Click to upload</span> or drag and drop
+                                    </p>
+                                    <p className="text-xs text-gray-500">JPG, PNG (MAX. 500KB)</p>
+                                </>
+                            )}
+                        </div>
+                        <Input
+                            id="image" // Ensure this matches the ID used in deleteImage
+                            type="file"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                            disabled={imageUploading} // Disable input during upload
+                            accept="image/*" // Only allow images
+                            multiple // Allow multiple images
+                        />
+                    </label>
                 </div>
-                <Card className="p-4">
-                    <div>
-                        <div className="flex items-center pb-4">
-                            <Label htmlFor="images" className="font-semibold">Upload Product Images</Label>
-                            <Button
-                                className="ml-5"
-                                onClick={() => {
-                                setImages([
-                                    ...images, {
-                                        src: '',
-                                        alt: ''
-                                    }
-                                ]);
-                            }}>
-                                Add Image
-                            </Button>
-                        </div>
-                      
-                        <div className="mt-4 grid grid-cols-2 gap-4">
-                            {images.map((image, index) => (
-                                <div key={index} className="border rounded-md p-3">
-                                    {images[index]
-                                        ?.src
-                                            ? (
-                                                <div className="flex items-start justify-between">
-                                                    <div className="mx-2">
-                                                        <img
-                                                            src={images[index].src}
-                                                            alt={images[index]
-                                                            ?.alt}
-                                                            className="w-[140px] h-[150px] object-fill"/>
-                                                    </div>
-                                                    <div>
-                                                        <Textarea className="w-[200px]" placeholder="Description" onChange={(e) => handleChange(e, index)}/>
-                                                    </div>
-                                                    <Trash2
-                                                        className="cursor-pointer"
-                                                        style={{
-                                                        color: "red"
-                                                    }}
-                                                        size={20}
-                                                        onClick={() => removeImage(index)}/>
-                                                </div>
-                                            )
-                                            : (
-                                                <div className="flex items-center justify-between">
-                                                    <Label htmlFor={`images-${index}`} className="w-max">Upload Image</Label>
-                                                    <Input
-                                                        type="file"
-                                                        id={`images-${index}`}
-                                                        name={`images-${index}`}
-                                                        accept="image/*"
-                                                        className="w-max"
-                                                        onChange={(e) => handleImageUpload(e, index)}/>
-                                                    <Trash2
-                                                        className="cursor-pointer"
-                                                        style={{
-                                                        color: "red"
-                                                    }}
-                                                        size={20}
-                                                        onClick={() => removeImage(index)}/>
-                                                </div>
-                                            )}
+                {images.length > 0 && (
+                    <div className="mt-4 grid grid-cols-3 gap-4">
+                        {images.map((img, index) => (
+                            <div>
+                                <div key={index} className="relative">
+                                    <img
+                                        src={img.src}
+                                        alt={`Uploaded ${index + 1}`}
+                                        className="w-full h-[250px] rounded-lg"
+                                    />
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="absolute cursor-pointer top-1 right-1 bg-red-50 hover:bg-red-200 text-white"
+                                        onClick={() => deleteImage(index)}
+                                    >
+                                        <X className="h-4 w-4 text-red-500" />
+                                    </Button>
                                 </div>
-                            ))}
-                        </div>
+                                <Textarea
+                                    type="text"
+                                    placeholder="Alt text"
+                                    value={img.alt}
+                                    className="my-2"
+                                    onChange={(e) => handleChangeText(e, index)} />
+                            </div>
+                        ))}
                     </div>
-                </Card>
-            </Card>
-        </div>
+                )}
+            </div>
+        </Card>
+    </div>
     );
 }
 
