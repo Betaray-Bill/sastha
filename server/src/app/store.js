@@ -1,17 +1,13 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import employeeDetailsReducer from './feature/employeeDetailsSlice.js'
+import createSliceReducer from './feature/createSlice.js'
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-// export const store = configureStore({
-//     reducer: {
-//         user: userReducer,
-//     },
-// })
-
 
 const rootReducer = combineReducers({
-    employeeDetails: employeeDetailsReducer
+    employeeDetails: employeeDetailsReducer,
+    createGeneratorSlice: createSliceReducer
 });
 
 const persistConfig = {

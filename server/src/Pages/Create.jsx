@@ -1,6 +1,6 @@
 import React from 'react'
 import {Outlet} from 'react-router'
-import Dashboard from '../Layout/Create/Dashboard/Dashboard'
+import Dashboard from '../Layout/Create/Dashboard'
 
 function Create() {
     return (
