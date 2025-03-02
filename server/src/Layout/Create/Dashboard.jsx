@@ -8,6 +8,8 @@ import {Trash2, Plus} from "lucide-react"; // Icons from Lucide React
 import {variables} from "../../utils/constants";
 import {toast} from "sonner"
 import ImageUpload from "./Dashboard/ImageUpload";
+import { db } from "../../utils/firebase";
+import { addDoc, collection } from "firebase/firestore";
 
 function Dashboard() {
     const [data,
@@ -152,6 +154,16 @@ function Dashboard() {
             // Get URL and map its url with alt tag 
             // Upload data to firebase 
             // saved Toast
+            const uploadedImageUrls = await Promise.all(images.map((file) => uploadToCloudinary(file)));
+            const sendData = {
+                ...data,
+                images: uploadedImageUrls
+            };
+            const generatorDocRef = await addDoc(collection(db, "generator"), sendData);
+            // const generatorId = generatorDocRef.id;
+
+            // await addDoc(collection(db, `users/${userDocRef.id}/cars`), { generatorId });
+
         } catch (err) {
             console.log(err)
         }
