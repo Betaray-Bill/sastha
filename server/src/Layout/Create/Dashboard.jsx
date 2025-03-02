@@ -207,6 +207,7 @@ function Dashboard() {
           // Append images with src and alt to sendData
           const sendData = {
               data:data,
+              title:title,
               pdf:uploadPdf,
               images: uploadedImageUrls, // Now includes both src and alt
           };
