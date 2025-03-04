@@ -1,8 +1,19 @@
-import React from 'react'
-import {Outlet} from 'react-router'
+import React, { useEffect, useState } from 'react'
+import {Outlet, useParams} from 'react-router'
 import Dashboard from '../Layout/Create/Dashboard'
+import { useSelector } from 'react-redux'
 
 function Create() {
+    const params = useParams()
+    const {generatorData} = useSelector((state) => state.generatorData)
+    const [data, setData] = useState()
+    useEffect(() => {
+        console.log(params.id)
+        let a = generatorData.filter((item) => item.id === params.id)
+        setData([...a])
+        console.log(a)
+    }, [params.id])
+
     return (
         <div className='mt-8 w-full h-full min-h-screen '>
             

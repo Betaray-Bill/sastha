@@ -4,6 +4,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import {useDispatch, useSelector} from 'react-redux';
 import { resetGeneratorData, setGeneratorData } from '../app/feature/generatorSlice';
+import { Link } from 'react-router';
 
 
 function Home() {
@@ -34,7 +35,7 @@ function Home() {
   useEffect(() => {
 
     console.log(2)
-    if(!generatorData){
+    if(generatorData){
       console.log(1)
       fetchData()
     }
@@ -54,6 +55,19 @@ function Home() {
       }}>
         Reset
       </button> */}
+
+      <div className='grid grid-cols-2 w-1/2 mx-auto gap-4 mt-10'>
+      {
+        generatorData && generatorData.map((item, index) => (
+          <div key={index} className='border p-4 '>
+            <h2>{item.title}</h2>
+            <button className='bg-blue-500 text-white p-2 rounded mt-2'>
+              <Link to={`/generator/${item.id}`}>View</Link>
+            </button>
+          </div>
+        ))
+      }
+      </div>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import Login from './Pages/Login'
 import ProtectedRoutes from './utils/ProtectedRoutes.jsx'
 import Create from './Pages/Create.jsx'
 import Nav from './Layout/Components/Nav.jsx'
+import EditGenerator from './Pages/EditGenerator.jsx'
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
                     <Route path='/'> 
                         <Route index element={< Home />} />
                         <Route path='create' element={< Create />}/>
+                        <Route path={`/generator/:id`} element={<EditGenerator />}/>
                     </Route>
                 </Route>
 
