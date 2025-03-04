@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    generatorData: "sdf"
+    generatorData: null
 }
 
 export const generatorDataSlice = createSlice({

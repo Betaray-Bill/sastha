@@ -8,8 +8,6 @@ import { Link } from 'react-router';
 
 
 function Home() {
-  // const [data,
-  //   setData] = useState([]);
 
   const dispatch = useDispatch();
   const {generatorData} = useSelector((state) => state.generatorData)
@@ -35,7 +33,7 @@ function Home() {
   useEffect(() => {
 
     console.log(2)
-    if(generatorData){
+    if(!generatorData){
       console.log(1)
       fetchData()
     }
