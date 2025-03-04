@@ -202,9 +202,9 @@ function Dashboard() {
 
           const uploadPdf = await uploadToCloudinary(pdf)
   
-          console.log(uploadedImageUrls);
+        //   console.log(uploadedImageUrls);
   
-          // Append images with src and alt to sendData
+          // Append images with src and alt to sendData 
           const sendData = {
               data:data,
               title:title,
