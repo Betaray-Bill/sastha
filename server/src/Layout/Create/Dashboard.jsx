@@ -8,9 +8,11 @@ import { Trash2, Plus, UploadCloud, X } from "lucide-react";
 import { variables } from "../../utils/constants";
 import { toast } from "sonner";
 import { db } from "../../utils/firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import ImageUpload from "./Dashboard/ImageUpload";
 import Loading from "../Components/Loading";
+import { useDispatch } from "react-redux";
+import { resetGeneratorData, setGeneratorData } from "../../app/feature/generatorSlice";
 
 function Dashboard() {
     const [data, setData] = useState([]);
@@ -168,8 +170,27 @@ function Dashboard() {
         }
     };
 
+    
+      const fetchData = async () => {
+        try {
+          const generatorRef = collection(db, "generator");
+          const querySnapshot = await getDocs(generatorRef);
+          const generatorData = querySnapshot
+              .docs
+              .map((doc) => ({
+                  id: doc.id,
+                  ...doc.data()
+              }));
+          // setData(generatorData);
+          dispatch(setGeneratorData(generatorData));
+          
+      } catch (error) {
+          console.error("Error fetching car data:", error);
+          alert("Failed to fetch car data. Please try again.");
+      }
+    }
     console.log(images)
-
+    const dispatch = useDispatch()
     // Upload Images and Save Data to Firebase
     const uploadData = async () => {
       setIsLoading(p => !p)
@@ -219,8 +240,9 @@ function Dashboard() {
           const generatorDocRef = await addDoc(collection(db, "generator"), sendData);
           toast.success("Data uploaded successfully!");
           setIsLoading(p => !p)
-
-          
+          dispatch(resetGeneratorData())
+          fetchData()
+        //   dispatch()
       } catch (err) {
           console.error(err);
           toast.error("Failed to upload data.");
