@@ -225,16 +225,16 @@ function EditGenerator() {
               })
           );
 
-        //   const uploadPdf = await uploadToCloudinary(pdf)
+          const uploadPdf = await uploadToCloudinary(pdf)
         // setIsLoading(p => !p)
   
-          console.log(uploadedImageUrls);
+          console.log(uploadPdf);
         //   return;
           // Append images with src and alt to sendData 
           const sendData = {
               data:data,
               title:title,
-              pdf:pdf ? pdf : pdf,
+              pdf: uploadPdf,
               images: uploadedImageUrls, // Now includes both src and alt
           };
   
@@ -383,7 +383,7 @@ function EditGenerator() {
                                 </div>
                                 {pdf && (
                                     <div className="mt-4 flex items-center justify-between">
-                                        <p className="text-sm text-gray-700">Uploaded PDF: {pdf.name ? pdf.name : <p>{pdf}</p>}</p>
+                                        <p className="text-sm text-gray-700">Uploaded PDF: {pdf.name ? pdf.name : <a href={pdf} target="_blank" rel="noopener noreferrer" className='bg-black text-white px-3 py-2'>View PDF in New Tab</a> }</p>
                                         <Button variant="ghost" size="icon" onClick={deletePdf}>
                                             <X className="h-4 w-4 text-red-500" />
                                         </Button>
@@ -392,7 +392,7 @@ function EditGenerator() {
                             </div>
                         </Card>
 
-                        <iframe 
+                        {/* <iframe 
             src={pdf} 
             width="600" 
             height="400" 
@@ -400,7 +400,7 @@ function EditGenerator() {
             title="PDF Preview"
           />
           <br />
-          <a href={pdf} target="_blank" rel="noopener noreferrer" className='bg-red-500 px-3 py-2'>View PDF in New Tab</a>
+          <a href={pdf} target="_blank" rel="noopener noreferrer" className='bg-red-500 px-3 py-2'>View PDF in New Tab</a> */}
 
                         {/* Display Data */}
                         {data && data?.map((item, index) => {
