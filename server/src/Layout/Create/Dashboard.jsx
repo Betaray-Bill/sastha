@@ -21,7 +21,32 @@ function Dashboard() {
     const [pdfUploading, setPdfUploading] = useState(false); // Separate state for PDF upload
     const [images, setImages] = useState([]);
     const [IsLoading, setIsLoading] = useState(false); // Separate state for image upload
-   
+    const [showSaveBar, setShowSaveBar] = useState(false);
+    const triggerSaveBar = () => setShowSaveBar(true);
+
+
+    const handleSave = () => {
+        uploadData();
+        setShowSaveBar(false);
+    };
+    
+      // Add event listeners to detect field changes
+    useEffect(() => {
+        const handleInputChange = () => {
+            setTimeout(() => triggerSaveBar(), 0); // Ensures state update happens after input update
+        };
+        
+        const inputs = document.querySelectorAll("input, textarea");
+        const fileInputs = document.querySelectorAll("input[type='file']");
+        
+        inputs.forEach((input) => input.addEventListener("input", handleInputChange));
+        fileInputs.forEach((input) => input.addEventListener("change", handleInputChange));
+        
+        return () => {
+          inputs.forEach((input) => input.removeEventListener("input", handleInputChange));
+          fileInputs.forEach((input) => input.removeEventListener("change", handleInputChange));
+        };
+      }, []);
    
     // Function to receive data from the child
     const handleChildData = (childData) => {
@@ -284,10 +309,12 @@ function Dashboard() {
     return (
         <div className="w-full p-14">
         {/* <Loading /> */}
-            <div className="flex items-center justify-between w-[80vw] mx-auto bg-black opacity-90 rounded-md px-3 py-1 my-3">
-                <span className="text-gray-300 text-sm">Changes made need to be saved</span>
-                <Button className="text-white   hover:opacity-40" onClick={uploadData}>{IsLoading ? "Saving..." : "Save"}</Button>
+        {showSaveBar && (
+            <div className="flex items-center justify-between w-[80vw] mx-auto opacity-90 rounded-md px-3 py-1 my-3">
+                <span className="text-black text-sm">Changes made need to be saved</span>
+                <Button className="text-white   hover:opacity-40" onClick={handleSave}>{IsLoading ? "Saving..." : "Save"}</Button>
             </div>
+        )}
             
             <div className="flex gap-6 w-[80vw] mx-auto">
                 {/* Output Section */}

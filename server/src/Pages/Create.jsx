@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {Outlet, useParams} from 'react-router'
 import Dashboard from '../Layout/Create/Dashboard'
 import { useSelector } from 'react-redux'
+import Nav from '../Layout/Components/Nav'
 
 function Create() {
     const params = useParams()
@@ -15,6 +16,8 @@ function Create() {
     }, [params.id])
 
     return (
+        <>
+        <Nav />
         <div className='mt-8 w-full h-full min-h-screen '>
             
             {/* Header */}
@@ -25,6 +28,7 @@ function Create() {
             {/* Dashboard */}
             <Dashboard />
         </div>
+        </>
     )
 }
 

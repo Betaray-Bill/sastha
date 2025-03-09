@@ -11,7 +11,6 @@ function App() {
 
     return (
         <div>
-            <Nav />
             <Routes>
                 <Route element={< ProtectedRoutes />}>
                     <Route path='/'> 

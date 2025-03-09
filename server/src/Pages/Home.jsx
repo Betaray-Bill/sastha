@@ -1,92 +1,77 @@
-import { useEffect, useState } from 'react'
-import Nav from '../Layout/Components/Nav'
+import { useEffect, useState } from 'react';
+import Nav from '../Layout/Components/Nav';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../utils/firebase';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetGeneratorData, setGeneratorData } from '../app/feature/generatorSlice';
-import { Link } from 'react-router';
-
+import { Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 function Home() {
-
   const dispatch = useDispatch();
-  const {generatorData} = useSelector((state) => state.generatorData)
+  const { generatorData } = useSelector((state) => state.generatorData);
 
   const fetchData = async () => {
     try {
       const generatorRef = collection(db, "generator");
       const querySnapshot = await getDocs(generatorRef);
-      const generatorData = querySnapshot
-          .docs
-          .map((doc) => ({
-              id: doc.id,
-              ...doc.data()
-          }));
-      // setData(generatorData);
+      const generatorData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       dispatch(setGeneratorData(generatorData));
-      
-  } catch (error) {
+    } catch (error) {
       console.error("Error fetching car data:", error);
       alert("Failed to fetch car data. Please try again.");
-  }
-  }
-  useEffect(() => {
-
-    console.log(2)
-    if(!generatorData){
-      console.log(1)
-      fetchData()
     }
-    console.log(3)
-  }, [])
+  };
 
-  console.log(generatorData)
+  useEffect(() => {
+    if (!generatorData) {
+      fetchData();
+    }
+  }, []);
 
-  // console.log(data)
   return (
-    <div className=''>
+    <div className="min-h-screen bg-gray-100">
+      <Nav />
       
-      {/* <Button >hello</Button> */}
-      <div className='flex justify-end'>
-        <button onClick={() => {
-          dispatch(resetGeneratorData())
-          fetchData()
-        }}
-          className='bg-black  px-3 py-2 text-white flex items-center'
-        >
-        <ion-icon name="sync-outline"></ion-icon> <span className='ml-3 text-sm'>Sync</span>
-        </button>
+      {/* Sync Button */}
+      <div className="flex justify-end max-w-7xl mx-auto py-4 px-6">
+        <Button onClick={() => {
+          dispatch(resetGeneratorData());
+          fetchData();
+        }} variant="outline" className="flex items-center space-x-2">
+          <RefreshCw size={18} />
+          <span>Sync</span>
+        </Button>
       </div>
-
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto py-12 px-4'>
+      
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto py-6 px-6">
         {generatorData && generatorData.map((item) => (
-          <div key={item.id} className='border rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow bg-white'>
+          <div key={item.id} className="border rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow">
             {/* Image Section */}
-            <div className='relative h-48 overflow-hidden'>
+            <div className="relative h-48 overflow-hidden">
               <img
-                src={item.images[0].src} // Use the first image from the array
+                src={item.images[0].src}
                 alt={item.images[0].alt}
-                className='w-full h-full object-cover'
+                className="w-full h-full object-cover"
               />
             </div>
 
             {/* Content Section */}
-            <div className='p-6'>
-              <h2 className='text-2xl font-bold mb-2'>{item.title}</h2>
-              <p className='text-gray-600 line-clamp-3 mb-4'>
-                {item.data.find((d) => d.type === 'Paragraph')?.content || 'No description available.'}
-              </p>
-              <button className='w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors'>
-                <Link to={`/generator/${item.id}`} className='block w-full h-full'>
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+              <Button className="w-full">
+                <Link to={`/generator/${item.id}`} className="block w-full h-full text-center">
                   View Details
                 </Link>
-              </button>
+              </Button>
             </div>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
