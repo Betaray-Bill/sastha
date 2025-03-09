@@ -47,12 +47,14 @@ function Home() {
     <div className=''>
       
       {/* <Button >hello</Button> */}
-      {/* <button onClick={() => {
+      <button onClick={() => {
         dispatch(resetGeneratorData())
         fetchData()
-      }}>
+      }}
+        className='bg-black  px-4 py-2 text-white'
+      >
         Reset
-      </button> */}
+      </button>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto py-12 px-4'>
         {generatorData && generatorData.map((item) => (

@@ -170,6 +170,35 @@ function Dashboard() {
         }
     };
 
+    const uploadPDFToCloudinary = async (file) => {
+        const cloudName = "de2i4bxdq"; // Replace with your Cloudinary cloud name
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`; // Use 'raw' type for PDFs
+    
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "silverWhite-demo"); // Replace with your preset
+        formData.append("resource_type", "raw"); // Explicitly setting resource type as raw
+    
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to upload PDF to Cloudinary");
+            }
+    
+            const data = await response.json();
+            console.log(data)
+            return data.secure_url; // Return the uploaded PDF URL
+        } catch (error) {
+            console.error("Cloudinary PDF upload error:", error);
+            throw error;
+        }
+    };
+    
+
     
       const fetchData = async () => {
         try {
@@ -222,7 +251,7 @@ function Dashboard() {
               })
           );
 
-          const uploadPdf = await uploadToCloudinary(pdf)
+          const uploadPdf = await uploadPDFToCloudinary(pdf)
   
         //   console.log(uploadedImageUrls);
   

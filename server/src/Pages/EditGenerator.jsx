@@ -10,7 +10,7 @@ import { Trash2, Plus, UploadCloud, X } from "lucide-react";
 // import { variables } from "../../utils/constants";
 import { toast } from "sonner";
 import { db } from "../utils/firebase.js";
-import { addDoc, collection } from "firebase/firestore"; 
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore"; 
 import ImageUpload from '../Layout/Create/Dashboard/ImageUpload';
 import { variables } from '../utils/constants';
 
@@ -24,7 +24,7 @@ function EditGenerator() {
     const [images, setImages] = useState([]);
     const [IsLoading, setIsLoading] = useState(false); // Separate state for image upload
     const [imageUploading, setImageUploading] = useState(false); // Separate state for image upload
-   
+    const [id, setID] = useState(null); // Separate state for
     useEffect(() => {
         console.log(params.id)
         let a = generatorData.filter((item) => item.id === params.id)[0]
@@ -32,10 +32,11 @@ function EditGenerator() {
         setImages(a.images)
         setTitle(a.title)
         setPdf(a.pdf)
+        setID(a.id)
         console.log(a)
-    }, [params.id])
+    }, [])
 
-    console.log("------------------------ ", images)
+    console.log("------------------------ ",id, images)
     // Function to receive data from the child
     const handleChildData = (childData) => {
         setImages(childData);
@@ -176,6 +177,7 @@ function EditGenerator() {
                 throw new Error("Failed to upload image to Cloudinary");
             }
             const data = await response.json();
+            console.log(data)
             return data.secure_url;
         } catch (error) {
             console.error("Cloudinary upload error:", error);
@@ -211,29 +213,43 @@ function EditGenerator() {
           // Upload only the file to Cloudinary and get the URL
           const uploadedImageUrls = await Promise.all(
               images.map(async (img) => {
-                  const url = await uploadToCloudinary(img.file);
-                  return { src: url, alt: img.alt }; // Map back to its alt
+                  // Map back to its alt
+                  if(img.file){
+                    console.log("IN", img.file)
+                    const url = await uploadToCloudinary(img.file);
+                    console.log(url)
+                    return { src: url, alt: img.alt }; 
+                  }else{
+                    return { ...img }; 
+                  }
               })
           );
 
-          const uploadPdf = await uploadToCloudinary(pdf)
+        //   const uploadPdf = await uploadToCloudinary(pdf)
+        // setIsLoading(p => !p)
   
-        //   console.log(uploadedImageUrls);
-  
+          console.log(uploadedImageUrls);
+        //   return;
           // Append images with src and alt to sendData 
           const sendData = {
               data:data,
               title:title,
-              pdf:uploadPdf,
+              pdf:pdf ? pdf : pdf,
               images: uploadedImageUrls, // Now includes both src and alt
           };
   
           console.log(sendData);
-  
+          console.log(id)
           // Upload to Firestore
-          const generatorDocRef = await addDoc(collection(db, "generator"), sendData);
+          const generatorDocRef =  doc(db, "generator", id); // Replace "yourDocumentId" with the actual document ID
+
+            await updateDoc (generatorDocRef, sendData);
+
+        //   const generatorDocRef = await updateDoc(collection(db, "generator"), sendData);
           toast.success("Data uploaded successfully!");
           setIsLoading(p => !p)
+
+          
 
           
       } catch (err) {
@@ -362,11 +378,12 @@ function EditGenerator() {
                                             disabled={pdfUploading} // Disable input during upload
                                             accept="application/pdf" // Only allow PDFs
                                         />
+                                        
                                     </label>
                                 </div>
                                 {pdf && (
                                     <div className="mt-4 flex items-center justify-between">
-                                        <p className="text-sm text-gray-700">Uploaded PDF: {pdf.name ? pdf.name : <a href={pdf} target='_blank'>view</a>}</p>
+                                        <p className="text-sm text-gray-700">Uploaded PDF: {pdf.name ? pdf.name : <p>{pdf}</p>}</p>
                                         <Button variant="ghost" size="icon" onClick={deletePdf}>
                                             <X className="h-4 w-4 text-red-500" />
                                         </Button>
@@ -374,6 +391,16 @@ function EditGenerator() {
                                 )}
                             </div>
                         </Card>
+
+                        <iframe 
+            src={pdf} 
+            width="600" 
+            height="400" 
+            style={{ border: "1px solid #ccc" }} 
+            title="PDF Preview"
+          />
+          <br />
+          <a href={pdf} target="_blank" rel="noopener noreferrer" className='bg-red-500 px-3 py-2'>View PDF in New Tab</a>
 
                         {/* Display Data */}
                         {data && data?.map((item, index) => {
