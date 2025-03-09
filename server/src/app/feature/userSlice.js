@@ -10,11 +10,14 @@ export const employeeDetailsSlice = createSlice({
     reducers: {
         setUser: (state, action) => {
             state.employeeDetails = action.payload
+        },
+        resetEmployeeDetails: (state) => {
+            state.employeeDetails = null
         }
     }
 })
 
 
-export const { setUser } = employeeDetailsSlice.actions
+export const { setUser, resetEmployeeDetails } = employeeDetailsSlice.actions
 
 export default employeeDetailsSlice.reducer
