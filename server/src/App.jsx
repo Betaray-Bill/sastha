@@ -6,9 +6,11 @@ import ProtectedRoutes from './utils/ProtectedRoutes.jsx'
 import Create from './Pages/Create.jsx'
 import Nav from './Layout/Components/Nav.jsx'
 import EditGenerator from './Pages/EditGenerator.jsx'
+import { useSelector } from 'react-redux'
 
 function App() {
-
+    const { employeeDetails } = useSelector((state) => state.employeeDetails);
+    console.log(employeeDetails)
     return (
         <div>
             <Routes>

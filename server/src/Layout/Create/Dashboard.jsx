@@ -13,6 +13,7 @@ import ImageUpload from "./Dashboard/ImageUpload";
 import Loading from "../Components/Loading";
 import { useDispatch } from "react-redux";
 import { resetGeneratorData, setGeneratorData } from "../../app/feature/generatorSlice";
+import TableSpecs from "./Dashboard/TableSpecs.jsx";
 
 function Dashboard() {
     const [data, setData] = useState([]);
@@ -514,6 +515,9 @@ function Dashboard() {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Display Data */}
+            <TableSpecs />
 
             {/* Image Upload Section */}
             <ImageUpload sendDataToParent={handleChildData} />

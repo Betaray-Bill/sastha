@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../../utils/firebase";
 import { toast } from "sonner";
 import { useSelector,useDispatch } from "react-redux";
-import { resetEmployeeDetails } from "../../app/feature/userSlice";
+import { resetUser } from "../../app/feature/userSlice.js";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
 import { LogOut, Home, FileText} from "lucide-react";
@@ -11,12 +11,12 @@ function Nav() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { employeeDetails } = useSelector((state) => state.employeeDetails);
-  // console.log("employeeDetails", employeeDetails)
+  console.log("employeeDetails", employeeDetails)
   const signOutUser = async () => {
     try {
       await auth.signOut();
-      dispatch(resetEmployeeDetails());
-      navigate("/login");
+      dispatch(resetUser(null));
+      window.location.replace("/login");
       toast.success("Signed out successfully");
     } catch (error) {
       toast.error("Failed to sign out");
