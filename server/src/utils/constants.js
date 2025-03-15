@@ -19,7 +19,7 @@ export const variables = [{
 
 export const GensetSpecifications = {
     PRIME_RATING_AT_RATED_RPM: "PRIME RATING AT RATED RPM",
-    GENSET_MODEL: "GENSET MODEL",
+    // GENSET_MODEL: "GENSET MODEL",
     FREQUENCY: "FREQUENCY",
     POWER_FACTOR: "POWER FACTOR",
     VOLTAGE: "VOLTAGE",

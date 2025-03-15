@@ -28,6 +28,7 @@ function TableSpecs() {
             if (value === GensetSpecifications.PRIME_RATING_AT_RATED_RPM) {
                 const structure = {
                     name: value,
+                    isSingle:false,
                     units: [
                         "KVa", "KW"
                     ],
@@ -43,6 +44,7 @@ function TableSpecs() {
             if (value === GensetSpecifications.OVERALL_DIMENSIONS_OF_GENSET) {
                 const structure = {
                     name: value,
+                    isSingle:false,
                     units: ["mm"],
                     type: ["Length", "Width", "Height"]
                 }
@@ -57,6 +59,7 @@ function TableSpecs() {
                 const structure = {
                     name: value,
                     units: ["Ltrs/Hr"],
+                    isSingle:false,
                     type: ["At 100% Load","At 75% Load","At 50% Load"]
                 }
                 structure.value = structureValueConstruction(structure, modelNumber)
@@ -69,7 +72,8 @@ function TableSpecs() {
             if (value === GensetSpecifications.FREQUENCY) {
                 const structure = {
                     name: value,
-                    units: ["Hz"]
+                    units: ["Hz"],
+                    isSingle:true,
                 }
                 structure.value = 50
                 setTableData([
@@ -81,9 +85,10 @@ function TableSpecs() {
             if (value === GensetSpecifications.POWER_FACTOR) {
                 const structure = {
                     name: value,
-                    units: ["Lagging"]
+                    units: ["Lagging"],
+                    isSingle:true,
                 }
-                structure.value = 50
+                structure.value = 0.8
                 setTableData([
                     ...tableData,
                     structure
@@ -94,7 +99,8 @@ function TableSpecs() {
                 const structure = {
                     name: value,
                     units: ["V"],
-                    value:''
+                    value:'',
+                    isSingle:true,
                 }
                 // structure.value = 50
                 setTableData([
@@ -107,7 +113,8 @@ function TableSpecs() {
                 const structure = {
                     name: value,
                     units: ["Volts-DC"],
-                    value:[]
+                    value:[],
+                    isSingle:true,
                 }
                 setTableData([
                     ...tableData,
@@ -120,6 +127,7 @@ function TableSpecs() {
                     name: value,
                     units: ["Kg"],
                     type: ["Dry"],
+                    isSingle:false,
                     value:''
                 }
                 setTableData([
@@ -133,7 +141,8 @@ function TableSpecs() {
                     name: value,
                     units: ["Kg"],
                     type: ["Dry"],
-                    value:''
+                    value:'',
+                    isSingle:true,
                 }
                 setTableData([
                     ...tableData,
@@ -145,7 +154,9 @@ function TableSpecs() {
                 const structure = {
                     name: value,
                     units: ["Ltrs"],
-                    value:''
+                    type:[],
+                    value:[],
+                    isSingle:false,
                 }
                 setTableData([
                     ...tableData,
@@ -157,7 +168,8 @@ function TableSpecs() {
                 const structure = {
                     name: value,
                     units: [""],
-                    value:''
+                    value:'',
+                    isSingle:true,
                 }
                 setTableData([
                     ...tableData,
@@ -165,22 +177,38 @@ function TableSpecs() {
                 ]);
             }
 
-            if (value === GensetSpecifications.ELECTRICAL_BATTERY_STARTING_VOLTAGE) {
-                const structure = {
-                    name: value,
-                    units: ["Volts-DC"],
-                    value:''
-                }
-                setTableData([
-                    ...tableData,
-                    structure
-                ]);
-            }
+            // if (value === GensetSpecifications.ELECTRICAL_BATTERY_STARTING_VOLTAGE) {
+            //     const structure = {
+            //         name: value,
+            //         units: ["Volts-DC"],
+            //         value:''
+            //     }
+            //     setTableData([
+            //         ...tableData,
+            //         structure
+            //     ]);
+            // }
         } else {
             toast.success("Already Added");
         }
     };
     console.log(tableData)
+
+    const handleSingleChange = (value, name) => {
+        console.log(value, name)
+        let u = tableData?.map(e => {
+            if (e.name === name) {
+                return {
+                   ...e,
+                    value
+                };
+            }
+            return e;
+        });
+        
+        console.log(u);
+        setTableData(u);
+    }
 
 
     const handleChange = (val, inputIndex, unitsIndex, key, name) => {
@@ -282,7 +310,19 @@ function TableSpecs() {
                         <div className="font-semibold text-md">
                             {index + 1}. {structure.name}
                         </div>
-                        {structure.type.length == 0
+                        {/* is Single */}
+                        {
+                            structure.isSingle ? 
+                            <div> 
+                                <Input 
+                                    className="w-max mt-3"
+                                    onChange={(val) => {
+                                        handleSingleChange(val.target.value, structure.name)
+                                    }}
+                                    value={structure.value}/>
+                            </div>
+                        :
+                        structure.type.length == 0
                             ? <div className='flex flex-col'>
                                     
                                     {structure
