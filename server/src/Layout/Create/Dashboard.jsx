@@ -21,6 +21,8 @@ function Dashboard() {
     const [pdf, setPdf] = useState(null);
     const [pdfUploading, setPdfUploading] = useState(false); // Separate state for PDF upload
     const [images, setImages] = useState([]);
+     const [tableData,
+            setTableData] = useState([]);
     const [IsLoading, setIsLoading] = useState(false); // Separate state for image upload
     const [showSaveBar, setShowSaveBar] = useState(false);
     const triggerSaveBar = () => setShowSaveBar(true);
@@ -52,6 +54,10 @@ function Dashboard() {
     // Function to receive data from the child
     const handleChildData = (childData) => {
         setImages(childData);
+    };
+
+    const handleTableChildData = (childData) => {
+        setTableData(childData);
     };
 
    
@@ -285,6 +291,7 @@ function Dashboard() {
           const sendData = {
               data:data,
               title:title,
+              table:tableData,
               pdf:uploadPdf,
               images: uploadedImageUrls, // Now includes both src and alt
           };
@@ -517,7 +524,7 @@ function Dashboard() {
             </div>
 
             {/* Display Data */}
-            <TableSpecs />
+            <TableSpecs sendTableDataToParent={handleTableChildData}/>
 
             {/* Image Upload Section */}
             <ImageUpload sendDataToParent={handleChildData} />

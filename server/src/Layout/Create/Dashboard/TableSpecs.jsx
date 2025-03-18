@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react'
+import React, {Fragment, useEffect, useState} from 'react'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Card, CardContent} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
@@ -7,7 +7,7 @@ import {toast} from "sonner";
 import {Input} from "@/components/ui/input"
 import {structureValueConstruction} from '../../../utils/functions';
 
-function TableSpecs() {
+function TableSpecs({sendTableDataToParent}) {
     const [selectedItems,
         setSelectedItems] = useState([]);
 
@@ -177,21 +177,12 @@ function TableSpecs() {
                 ]);
             }
 
-            // if (value === GensetSpecifications.ELECTRICAL_BATTERY_STARTING_VOLTAGE) {
-            //     const structure = {
-            //         name: value,
-            //         units: ["Volts-DC"],
-            //         value:''
-            //     }
-            //     setTableData([
-            //         ...tableData,
-            //         structure
-            //     ]);
-            // }
         } else {
             toast.success("Already Added");
         }
     };
+
+    
     console.log(tableData)
 
     const handleSingleChange = (value, name) => {
@@ -207,7 +198,7 @@ function TableSpecs() {
         });
         
         console.log(u);
-        setTableData(u);
+        setTableData(u); 
     }
 
 
@@ -249,6 +240,11 @@ function TableSpecs() {
             setTableData(u);
         }
     }
+
+
+    useEffect(() => {
+        sendTableDataToParent(tableData)
+        }, [tableData])
 
     console.log(tableData)
     return (
