@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Sashtha Power Services|Kirloskar Generator Authorized Dealer in Chennai",
+  title: "Sashtha Power Services | Kirloskar Generator Authorized Dealer in Chennai",
   description: "We Sashtha Power Services is an Authorized Kirloskar Generator Dealer in Ekkaduthangal,Chennai, Offering from 2kVA to 200Kva Generators.We provide Best Generator, Solar Panel Rentals and services",
   keywords:["KOEL Generator Dealer in Chennai", "Solar Panel Rental in Sashtha Power services", "Diesel Generator", "Diesel Genset", "Gas Generator", "Portable DG", "Optiprime DG", "Best Rental DG"],
   openGraph: {

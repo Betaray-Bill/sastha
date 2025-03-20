@@ -252,6 +252,13 @@ function Dashboard() {
     }
     console.log(images)
     const dispatch = useDispatch()
+
+    // Meta description
+    const [metaTitle, setMetaTitle] = useState("");
+    const [metaDescription, setMetaDescription] = useState("");
+    const [metaKeywords, setMetaKeywords] = useState("");
+
+
     // Upload Images and Save Data to Firebase
     const uploadData = async () => {
       setIsLoading(p => !p)
@@ -294,6 +301,11 @@ function Dashboard() {
               table:tableData,
               pdf:uploadPdf,
               images: uploadedImageUrls, // Now includes both src and alt
+              metaData:{
+                    metaTitle:metaTitle,
+                    metaDescription:metaDescription,
+                    metaKeywords:metaKeywords
+              }
           };
   
           console.log(sendData);
@@ -317,12 +329,12 @@ function Dashboard() {
     return (
         <div className="w-full p-14">
         {/* <Loading /> */}
-        {showSaveBar && (
+        {/* {showSaveBar && ( */}
             <div className="flex items-center justify-between w-[80vw] mx-auto opacity-90 rounded-md px-3 py-1 my-3">
                 <span className="text-black text-sm">Changes made need to be saved</span>
                 <Button className="text-white   hover:opacity-40" onClick={handleSave}>{IsLoading ? "Saving..." : "Save"}</Button>
             </div>
-        )}
+        {/* )} */}
             
             <div className="flex gap-6 w-[80vw] mx-auto">
                 {/* Output Section */}
@@ -528,6 +540,35 @@ function Dashboard() {
 
             {/* Image Upload Section */}
             <ImageUpload sendDataToParent={handleChildData} />
+
+            {/* Meta Description */}
+            <div className="my-10 border rounded-md p-4 drop-shadow-2xl mx-auto w-[80vw]">
+                <div>
+                    <h2 className="font-semibold border-b py-3">Meta Details</h2>
+                </div>
+
+                <div className="mt-8">
+                    <label htmlFor="metaTitle">Meta Title</label>
+                    <Input id="metaTitle" type="text" className="mt-2" name="metaTitle" onChange={(e) => {
+                        setMetaTitle(e.target.value);
+                    }}/>
+                </div>
+
+                <div className="mt-6">
+                    <label htmlFor="metaDescription">Meta Description</label>
+                    <Textarea id="metaDescription" rows="4" className="mt-2" name="metaDescription"onChange={(e) => {
+                        setMetaDescription(e.target.value);
+                    }} />
+                </div>
+
+                <div className="mt-6">
+                    <label htmlFor="metaKeywords">Meta Keywords</label>
+                    <Textarea id="metaKeywords" rows="4" className="mt-2" name="metaKeywords"onChange={(e) => {
+                        setMetaKeywords(e.target.value)
+                    }} />
+                </div>
+            </div>
+            
         </div>
     );
 }
