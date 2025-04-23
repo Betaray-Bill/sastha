@@ -14,6 +14,7 @@ import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import ImageUpload from '../Layout/Create/Dashboard/ImageUpload';
 import { variables } from '../utils/constants';
 import Nav from '../Layout/Components/Nav.jsx';
+import TableSpecs from '../Layout/Create/Dashboard/TableSpecs.jsx';
 
 function EditGenerator() {
     const params = useParams()
@@ -23,9 +24,16 @@ function EditGenerator() {
     const [pdf, setPdf] = useState(null);
     const [pdfUploading, setPdfUploading] = useState(false); // Separate state for PDF upload
     const [images, setImages] = useState([]);
+         const [tableData,
+                setTableData] = useState([]);
     const [IsLoading, setIsLoading] = useState(false); // Separate state for image upload
     const [imageUploading, setImageUploading] = useState(false); // Separate state for image upload
     const [id, setID] = useState(null); // Separate state for
+      const [modelNumber,
+            setModelNumber] = useState(0);
+        const [model,
+            setModel] = useState([]);
+
     useEffect(() => {
         console.log(params.id)
         let a = generatorData.filter((item) => item.id === params.id)[0]
@@ -34,8 +42,17 @@ function EditGenerator() {
         setTitle(a.title)
         setPdf(a.pdf)
         setID(a.id)
-        console.log(a)
+        setTableData(a.table)
+        console.log(a.table)
     }, [])
+
+
+        // Meta description
+        const [metaTitle, setMetaTitle] = useState("");
+        const [metaDescription, setMetaDescription] = useState("");
+        const [metaKeywords, setMetaKeywords] = useState("");
+    
+    
 
     console.log("------------------------ ",id, images)
     // Function to receive data from the child
@@ -229,14 +246,22 @@ function EditGenerator() {
           const uploadPdf = await uploadToCloudinary(pdf)
         // setIsLoading(p => !p)
   
-          console.log(uploadPdf);
+          console.log(tableData);
         //   return;
           // Append images with src and alt to sendData 
           const sendData = {
-              data:data,
-              title:title,
-              pdf: uploadPdf,
-              images: uploadedImageUrls, // Now includes both src and alt
+                data:data,
+                title:title,
+                pdf: uploadPdf,
+                table: tableData,
+                modelNumber: modelNumber,
+                model:model,
+                images: uploadedImageUrls, // Now includes both src and alt
+                metaData:{
+                    metaTitle:metaTitle,
+                    metaDescription:metaDescription,
+                    metaKeywords:metaKeywords
+              }
           };
   
           console.log(sendData);
@@ -244,7 +269,7 @@ function EditGenerator() {
           // Upload to Firestore
           const generatorDocRef =  doc(db, "generator", id); // Replace "yourDocumentId" with the actual document ID
 
-            await updateDoc (generatorDocRef, sendData);
+            await updateDoc(generatorDocRef, sendData);
 
         //   const generatorDocRef = await updateDoc(collection(db, "generator"), sendData);
           toast.success("Data uploaded successfully!");
@@ -260,9 +285,22 @@ function EditGenerator() {
 
       }
   };
+
+  
+     const handleTableChildData = (childData) => {
+    console.log(childData)
+    setTableData(childData);
+    };
+
+    const handleModelData = (childData) => {
+        console.log(childData)
+        setModel(childData.model);
+        setModelNumber(childData.modelNumber);
+
+    }
   
 
-    console.log(data)
+    console.log(tableData)
 
     
        // Handle image upload
@@ -536,6 +574,9 @@ function EditGenerator() {
                 </Card>
             </div>
 
+            <TableSpecs sendTableDataToParent={handleTableChildData} data={tableData && tableData} sendModelData={handleModelData}/>
+
+
             {/* Image Upload Section */}
             {/* <ImageUpload sendDataToParent={handleChildData} /> */}
                 <div className="w-[80vw] mx-auto mt-6">
@@ -605,6 +646,36 @@ function EditGenerator() {
                         </div>
                     </Card>
                 </div>
+
+
+
+        {/* Meta Description */}
+                    <div className="my-10 border rounded-md p-4 drop-shadow-2xl mx-auto w-[80vw]">
+                        <div>
+                            <h2 className="font-semibold border-b py-3">Meta Details</h2>
+                        </div>
+        
+                        <div className="mt-8">
+                            <label htmlFor="metaTitle">Meta Title</label>
+                            <Input id="metaTitle" type="text" className="mt-2" name="metaTitle" onChange={(e) => {
+                                setMetaTitle(e.target.value);
+                            }}/>
+                        </div>
+        
+                        <div className="mt-6">
+                            <label htmlFor="metaDescription">Meta Description</label>
+                            <Textarea id="metaDescription" rows="4" className="mt-2" name="metaDescription"onChange={(e) => {
+                                setMetaDescription(e.target.value);
+                            }} />
+                        </div>
+        
+                        <div className="mt-6">
+                            <label htmlFor="metaKeywords">Meta Keywords</label>
+                            <Textarea id="metaKeywords" rows="4" className="mt-2" name="metaKeywords"onChange={(e) => {
+                                setMetaKeywords(e.target.value)
+                            }} />
+                        </div>
+                    </div>
         </div>
     </>
   )

@@ -7,7 +7,7 @@ import {toast} from "sonner";
 import {Input} from "@/components/ui/input"
 import {structureValueConstruction} from '../../../utils/functions';
 
-function TableSpecs({sendTableDataToParent}) {
+function TableSpecs({sendTableDataToParent,sendModelData, data}) {
     const [selectedItems,
         setSelectedItems] = useState([]);
 
@@ -17,6 +17,13 @@ function TableSpecs({sendTableDataToParent}) {
         setModelNumber] = useState(0);
     const [model,
         setModel] = useState([]);
+
+    useEffect(() => {
+        if(data && data.length>0){
+            setTableData(data)
+        }
+    })
+
 
     const handleSelect = (value) => {
         if (!selectedItems.includes(value)) {
@@ -182,8 +189,7 @@ function TableSpecs({sendTableDataToParent}) {
         }
     };
 
-    
-    console.log(tableData)
+console.log(tableData)
 
     const handleSingleChange = (value, name) => {
         console.log(value, name)
@@ -240,13 +246,12 @@ function TableSpecs({sendTableDataToParent}) {
             setTableData(u);
         }
     }
-
-
-    useEffect(() => {
+      useEffect(() => {
         sendTableDataToParent(tableData)
-        }, [tableData])
+        sendModelData({model, modelNumber})
+    }, [tableData])
 
-    console.log(tableData)
+    console.log(data)
     return (
         <div className="w-[80vw] mx-auto mt-6">
             <Card className="p-4">
@@ -301,7 +306,7 @@ function TableSpecs({sendTableDataToParent}) {
                 <div className="mt-6">
                     <h2 className="text-lg font-semibold">Current Table Data</h2>
 
-                    {tableData?.map((structure, index) => <div key={`${index}-${index}`} className='mt-2 border px-3 py-2 rounded-md'>
+                    {tableData && tableData?.map((structure, index) => <div key={`${index}-${index}`} className='mt-2 border px-3 py-2 rounded-md'>
                         {/* Only apply rowSpan to the first unit row */}
                         <div className="font-semibold text-md">
                             {index + 1}. {structure.name}
