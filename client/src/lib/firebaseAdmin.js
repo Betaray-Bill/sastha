@@ -10,10 +10,10 @@ function formatPrivateKey(key) {
 
 export function createFirebaseAdminApp() {
     const params = {
-        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         // storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET as string,
-        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY
+        privateKey: process.env.FIREBASE_PRIVATE_KEY
     };
     const privateKey = formatPrivateKey(params.privateKey);
 
@@ -36,10 +36,10 @@ export function createFirebaseAdminApp() {
 
 export async function initAdmin() {
     const params = {
-        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         // storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET as string,
-        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY
+        privateKey: process.env.FIREBASE_PRIVATE_KEY
     };
     // console.log("hey", params)
 
