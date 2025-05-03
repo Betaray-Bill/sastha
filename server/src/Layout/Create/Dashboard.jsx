@@ -60,6 +60,10 @@ function Dashboard() {
         setTableData(childData);
     };
 
+    const sendModelData =() => {
+        
+    }
+
    
 
     // Add data for variables
@@ -536,7 +540,7 @@ function Dashboard() {
             </div>
 
             {/* Display Data */}
-            <TableSpecs sendTableDataToParent={handleTableChildData}/>
+            <TableSpecs sendTableDataToParent={handleTableChildData} sendModelData={sendModelData}/>
 
             {/* Image Upload Section */}
             <ImageUpload sendDataToParent={handleChildData} />

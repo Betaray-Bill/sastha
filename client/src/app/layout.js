@@ -56,7 +56,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <Head>
-       <Script
+      </Head>
+      <Script
           id="structured-data"
           type="application/ld+json"
           strategy="beforeInteractive"
@@ -64,8 +65,6 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify(structuredData),
           }}
         />
-      </  Head>
-
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
