@@ -1,10 +1,6 @@
-import {getFirestore} from "firebase-admin/firestore";
-import {getStorage} from "firebase-admin/storage";
+import {getFirestore} from "firebase-admin/firestore"; 
 import {initAdmin} from "@/lib/firebaseAdmin"; // Ensure you have a Firebase admin init file
-import Script from "next/script";
-import Head from "next/head";
-
-
+ 
 initAdmin();
 const firestore = getFirestore();
 
@@ -126,7 +122,7 @@ export default async function Page({params}) {
 
     return (
         <ul>
-            <Head>
+            {/* <Head> */}
                 {/* <title>{data.metaData.metaTitle}</title>
                 <meta name="description" content={data.metaData.metaDescription}/>
                 <meta name="keywords" content={data.metaData.metaKeywords}/>
@@ -139,7 +135,7 @@ export default async function Page({params}) {
                         __html: JSON.stringify(structuredData)
                     }}
                 /> */}
-            </Head>
+            {/* </Head> */}
             <li>{JSON.stringify(data)}</li>
         </ul>
     );
